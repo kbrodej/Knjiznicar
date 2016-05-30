@@ -1,4 +1,9 @@
-
+﻿/*
+Created: 01-May-16
+Modified: 30-May-16
+Model: MySQL 5.6
+Database: MySQL 5.6
+*/
 
 
 -- Create tables section -------------------------------------------------
@@ -99,7 +104,6 @@ CREATE TABLE `Borrowed`
   `Return_date` Date NOT NULL,
   `id_person` Int,
   `num_book` Int,
-  `id_book` Int,
   PRIMARY KEY (`id_borrowed`)
 )
 ;
@@ -107,7 +111,7 @@ CREATE TABLE `Borrowed`
 CREATE INDEX `IX_Relationship9` ON `Borrowed` (`id_person`)
 ;
 
-CREATE INDEX `IX_Relationship15` ON `Borrowed` (`num_book`,`id_book`)
+CREATE INDEX `IX_Relationship15` ON `Borrowed` (`num_book`)
 ;
 
 -- Table Type
@@ -135,16 +139,16 @@ CREATE TABLE `Language`
 
 CREATE TABLE `Copy`
 (
-  `num_book` Int NOT NULL,
-  `id_book` Int NOT NULL,
-  `Number` Int NOT NULL
+  `id_copy` Int NOT NULL,
+  `Number` Int NOT NULL,
+  `id_book` Int
 )
 ;
 
-CREATE INDEX `IX_Relationship13` ON `Copy` (`id_book`)
+CREATE INDEX `IX_Relationship18` ON `Copy` (`id_book`)
 ;
 
-ALTER TABLE `Copy` ADD  PRIMARY KEY (`num_book`,`id_book`)
+ALTER TABLE `Copy` ADD  PRIMARY KEY (`id_copy`)
 ;
 
 -- Create relationships section ------------------------------------------------- 
@@ -167,12 +171,12 @@ ALTER TABLE `Book` ADD CONSTRAINT `Relationship11` FOREIGN KEY (`id_type`) REFER
 ALTER TABLE `Book` ADD CONSTRAINT `Relationship12` FOREIGN KEY (`id_language`) REFERENCES `Language` (`id_language`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ;
 
-ALTER TABLE `Copy` ADD CONSTRAINT `Relationship13` FOREIGN KEY (`id_book`) REFERENCES `Book` (`id_book`) ON DELETE RESTRICT ON UPDATE RESTRICT
-;
-
-ALTER TABLE `Borrowed` ADD CONSTRAINT `Relationship15` FOREIGN KEY (`num_book`, `id_book`) REFERENCES `Copy` (`num_book`, `id_book`) ON DELETE RESTRICT ON UPDATE RESTRICT
+ALTER TABLE `Borrowed` ADD CONSTRAINT `Relationship15` FOREIGN KEY (`num_book`) REFERENCES `Copy` (`id_copy`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ;
 
 ALTER TABLE `BookAuthor` ADD CONSTRAINT `Relationship17` FOREIGN KEY (`id_book`) REFERENCES `Book` (`id_book`) ON DELETE RESTRICT ON UPDATE RESTRICT
+;
+
+ALTER TABLE `Copy` ADD CONSTRAINT `Relationship18` FOREIGN KEY (`id_book`) REFERENCES `Book` (`id_book`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ;
 

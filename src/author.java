@@ -1,7 +1,7 @@
 /**
  * Created by kleme on 15-May-16.
  */
-public class author {
+public class author{
     private String name;
     private String surname;
 
