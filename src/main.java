@@ -51,6 +51,8 @@ public class main {
                         System.out.println(id_book + " " + title + " " + " " + status + " " + aName + " " + aSurname + " " + id_book_status + " "
                                 + language + " " + type + " " + max_bd);
                     }
+                } else{
+                    System.out.println("ISBN ni pravilen");
                 }
             }
         } catch (SQLException e) {
