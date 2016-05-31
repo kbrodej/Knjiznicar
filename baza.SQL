@@ -1,182 +1,180 @@
-﻿/*
-Created: 01-May-16
-Modified: 30-May-16
-Model: MySQL 5.6
-Database: MySQL 5.6
-*/
+﻿-- --------------------------------------------------------
+-- Host:                         Localhost
+-- Server version:               10.1.13-MariaDB - mariadb.org binary distribution
+-- Server OS:                    Win64
+-- HeidiSQL Version:             9.3.0.4984
+-- --------------------------------------------------------
 
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET NAMES utf8mb4 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
--- Create tables section -------------------------------------------------
-
--- Table Book
-
-CREATE TABLE `Book`
-(
-  `id_book` Int NOT NULL AUTO_INCREMENT,
-  `Title` Varchar(55) NOT NULL,
-  `ISBN` Int NOT NULL,
-  `id_book_status` Int,
-  `id_publisher` Int,
-  `id_type` Int,
-  `id_language` Int,
-  PRIMARY KEY (`id_book`)
-)
-;
-
-CREATE INDEX `IX_Relationship1` ON `Book` (`id_book_status`)
-;
-
-CREATE INDEX `IX_Relationship7` ON `Book` (`id_publisher`)
-;
-
-CREATE INDEX `IX_Relationship11` ON `Book` (`id_type`)
-;
-
-CREATE INDEX `IX_Relationship12` ON `Book` (`id_language`)
-;
-
--- Table BookAuthor
-
-CREATE TABLE `BookAuthor`
-(
-  `id_bookauthor` Int NOT NULL AUTO_INCREMENT,
-  `id_author` Int,
-  `id_book` Int,
-  PRIMARY KEY (`id_bookauthor`)
-)
-;
-
-CREATE INDEX `IX_Relationship4` ON `BookAuthor` (`id_author`)
-;
-
-CREATE INDEX `IX_Relationship17` ON `BookAuthor` (`id_book`)
-;
-
--- Table Book_status
-
-CREATE TABLE `Book_status`
-(
-  `id_book_status` Int NOT NULL AUTO_INCREMENT,
-  `status` Bool NOT NULL,
-  PRIMARY KEY (`id_book_status`)
-)
-;
-
--- Table Author
-
-CREATE TABLE `Author`
-(
-  `id_author` Int NOT NULL AUTO_INCREMENT,
-  `Name` Varchar(20) NOT NULL,
-  `Surname` Varchar(20) NOT NULL,
+-- Dumping structure for table knjiznicar.author
+CREATE TABLE IF NOT EXISTS `author` (
+  `id_author` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(20) NOT NULL,
+  `Surname` varchar(20) NOT NULL,
   PRIMARY KEY (`id_author`)
-)
-;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
--- Table Publisher
+-- Dumping data for table knjiznicar.author: ~1 rows (approximately)
+/*!40000 ALTER TABLE `author` DISABLE KEYS */;
+INSERT INTO `author` (`id_author`, `Name`, `Surname`) VALUES
+  (1, 'Klemen', 'Brodej');
+/*!40000 ALTER TABLE `author` ENABLE KEYS */;
 
-CREATE TABLE `Publisher`
-(
-  `id_publisher` Int NOT NULL AUTO_INCREMENT,
-  `Name` Varchar(20) NOT NULL,
-  PRIMARY KEY (`id_publisher`)
-)
-;
 
--- Table Person
+-- Dumping structure for table knjiznicar.book
+CREATE TABLE IF NOT EXISTS `book` (
+  `id_book` int(11) NOT NULL AUTO_INCREMENT,
+  `Title` varchar(55) NOT NULL,
+  `ISBN` int(11) NOT NULL,
+  `id_book_status` int(11) DEFAULT NULL,
+  `id_publisher` int(11) DEFAULT NULL,
+  `id_type` int(11) DEFAULT NULL,
+  `id_language` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_book`),
+  KEY `IX_Relationship1` (`id_book_status`),
+  KEY `IX_Relationship7` (`id_publisher`),
+  KEY `IX_Relationship11` (`id_type`),
+  KEY `IX_Relationship12` (`id_language`),
+  CONSTRAINT `Relationship1` FOREIGN KEY (`id_book_status`) REFERENCES `book_status` (`id_book_status`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `Relationship11` FOREIGN KEY (`id_type`) REFERENCES `type` (`id_type`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `Relationship12` FOREIGN KEY (`id_language`) REFERENCES `language` (`id_language`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `Relationship7` FOREIGN KEY (`id_publisher`) REFERENCES `publisher` (`id_publisher`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
-CREATE TABLE `Person`
-(
-  `id_person` Int NOT NULL AUTO_INCREMENT,
-  `Name` Varchar(20) NOT NULL,
-  `Surname` Varchar(20) NOT NULL,
-  `Fee` Int,
-  PRIMARY KEY (`id_person`)
-)
-;
+-- Dumping data for table knjiznicar.book: ~1 rows (approximately)
+/*!40000 ALTER TABLE `book` DISABLE KEYS */;
+INSERT INTO `book` (`id_book`, `Title`, `ISBN`, `id_book_status`, `id_publisher`, `id_type`, `id_language`) VALUES
+  (1, 'Moja prva knjiga', 123456789, 1, 1, 1, 1);
+/*!40000 ALTER TABLE `book` ENABLE KEYS */;
 
--- Table Borrowed
 
-CREATE TABLE `Borrowed`
-(
-  `id_borrowed` Int NOT NULL AUTO_INCREMENT,
-  `Borrowed_date` Date NOT NULL,
-  `Return_date` Date NOT NULL,
-  `id_person` Int,
-  `num_book` Int,
-  PRIMARY KEY (`id_borrowed`)
-)
-;
+-- Dumping structure for table knjiznicar.bookauthor
+CREATE TABLE IF NOT EXISTS `bookauthor` (
+  `id_bookauthor` int(11) NOT NULL AUTO_INCREMENT,
+  `id_author` int(11) DEFAULT NULL,
+  `id_book` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_bookauthor`),
+  KEY `IX_Relationship4` (`id_author`),
+  KEY `IX_Relationship17` (`id_book`),
+  CONSTRAINT `Relationship17` FOREIGN KEY (`id_book`) REFERENCES `book` (`id_book`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `Relationship4` FOREIGN KEY (`id_author`) REFERENCES `author` (`id_author`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
-CREATE INDEX `IX_Relationship9` ON `Borrowed` (`id_person`)
-;
+-- Dumping data for table knjiznicar.bookauthor: ~1 rows (approximately)
+/*!40000 ALTER TABLE `bookauthor` DISABLE KEYS */;
+INSERT INTO `bookauthor` (`id_bookauthor`, `id_author`, `id_book`) VALUES
+  (1, 1, 1);
+/*!40000 ALTER TABLE `bookauthor` ENABLE KEYS */;
 
-CREATE INDEX `IX_Relationship15` ON `Borrowed` (`num_book`)
-;
 
--- Table Type
+-- Dumping structure for table knjiznicar.book_status
+CREATE TABLE IF NOT EXISTS `book_status` (
+  `id_book_status` int(11) NOT NULL AUTO_INCREMENT,
+  `status` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id_book_status`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
-CREATE TABLE `Type`
-(
-  `id_type` Int NOT NULL AUTO_INCREMENT,
-  `Type` Varchar(20) NOT NULL,
-  `Max_borrowed_days` Int NOT NULL,
-  PRIMARY KEY (`id_type`)
-)
-;
+-- Dumping data for table knjiznicar.book_status: ~2 rows (approximately)
+/*!40000 ALTER TABLE `book_status` DISABLE KEYS */;
+INSERT INTO `book_status` (`id_book_status`, `status`) VALUES
+  (1, 1),
+  (2, 2);
+/*!40000 ALTER TABLE `book_status` ENABLE KEYS */;
 
--- Table Language
 
-CREATE TABLE `Language`
-(
-  `id_language` Int NOT NULL AUTO_INCREMENT,
-  `Language` Varchar(100),
+-- Dumping structure for table knjiznicar.borrowed
+CREATE TABLE IF NOT EXISTS `borrowed` (
+  `id_borrowed` int(11) NOT NULL AUTO_INCREMENT,
+  `Borrowed_date` date NOT NULL,
+  `Return_date` date NOT NULL,
+  `id_person` int(11) DEFAULT NULL,
+  `num_book` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_borrowed`),
+  KEY `IX_Relationship9` (`id_person`),
+  KEY `IX_Relationship15` (`num_book`),
+  CONSTRAINT `Relationship15` FOREIGN KEY (`num_book`) REFERENCES `copy` (`id_copy`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `Relationship9` FOREIGN KEY (`id_person`) REFERENCES `person` (`id_person`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Dumping data for table knjiznicar.borrowed: ~0 rows (approximately)
+/*!40000 ALTER TABLE `borrowed` DISABLE KEYS */;
+/*!40000 ALTER TABLE `borrowed` ENABLE KEYS */;
+
+
+-- Dumping structure for table knjiznicar.copy
+CREATE TABLE IF NOT EXISTS `copy` (
+  `id_copy` int(11) NOT NULL,
+  `Number` int(11) NOT NULL,
+  `id_book` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_copy`),
+  KEY `IX_Relationship18` (`id_book`),
+  CONSTRAINT `Relationship18` FOREIGN KEY (`id_book`) REFERENCES `book` (`id_book`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Dumping data for table knjiznicar.copy: ~0 rows (approximately)
+/*!40000 ALTER TABLE `copy` DISABLE KEYS */;
+/*!40000 ALTER TABLE `copy` ENABLE KEYS */;
+
+
+-- Dumping structure for table knjiznicar.language
+CREATE TABLE IF NOT EXISTS `language` (
+  `id_language` int(11) NOT NULL AUTO_INCREMENT,
+  `Language` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id_language`)
-)
-;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
--- Table Copy
+-- Dumping data for table knjiznicar.language: ~1 rows (approximately)
+/*!40000 ALTER TABLE `language` DISABLE KEYS */;
+INSERT INTO `language` (`id_language`, `Language`) VALUES
+  (1, 'SLO');
+/*!40000 ALTER TABLE `language` ENABLE KEYS */;
 
-CREATE TABLE `Copy`
-(
-  `id_copy` Int NOT NULL,
-  `Number` Int NOT NULL,
-  `id_book` Int
-)
-;
 
-CREATE INDEX `IX_Relationship18` ON `Copy` (`id_book`)
-;
+-- Dumping structure for table knjiznicar.person
+CREATE TABLE IF NOT EXISTS `person` (
+  `id_person` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(20) NOT NULL,
+  `Surname` varchar(20) NOT NULL,
+  `Fee` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_person`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-ALTER TABLE `Copy` ADD  PRIMARY KEY (`id_copy`)
-;
+-- Dumping data for table knjiznicar.person: ~0 rows (approximately)
+/*!40000 ALTER TABLE `person` DISABLE KEYS */;
+/*!40000 ALTER TABLE `person` ENABLE KEYS */;
 
--- Create relationships section ------------------------------------------------- 
 
-ALTER TABLE `Book` ADD CONSTRAINT `Relationship1` FOREIGN KEY (`id_book_status`) REFERENCES `Book_status` (`id_book_status`) ON DELETE CASCADE ON UPDATE CASCADE
-;
+-- Dumping structure for table knjiznicar.publisher
+CREATE TABLE IF NOT EXISTS `publisher` (
+  `id_publisher` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(20) NOT NULL,
+  PRIMARY KEY (`id_publisher`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
-ALTER TABLE `BookAuthor` ADD CONSTRAINT `Relationship4` FOREIGN KEY (`id_author`) REFERENCES `Author` (`id_author`) ON DELETE CASCADE ON UPDATE CASCADE
-;
+-- Dumping data for table knjiznicar.publisher: ~1 rows (approximately)
+/*!40000 ALTER TABLE `publisher` DISABLE KEYS */;
+INSERT INTO `publisher` (`id_publisher`, `Name`) VALUES
+  (1, 'DZS');
+/*!40000 ALTER TABLE `publisher` ENABLE KEYS */;
 
-ALTER TABLE `Book` ADD CONSTRAINT `Relationship7` FOREIGN KEY (`id_publisher`) REFERENCES `Publisher` (`id_publisher`) ON DELETE CASCADE ON UPDATE CASCADE
-;
 
-ALTER TABLE `Borrowed` ADD CONSTRAINT `Relationship9` FOREIGN KEY (`id_person`) REFERENCES `Person` (`id_person`) ON DELETE RESTRICT ON UPDATE RESTRICT
-;
+-- Dumping structure for table knjiznicar.type
+CREATE TABLE IF NOT EXISTS `type` (
+  `id_type` int(11) NOT NULL AUTO_INCREMENT,
+  `Type` varchar(20) NOT NULL,
+  `Max_borrowed_days` int(11) NOT NULL,
+  PRIMARY KEY (`id_type`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
-ALTER TABLE `Book` ADD CONSTRAINT `Relationship11` FOREIGN KEY (`id_type`) REFERENCES `Type` (`id_type`) ON DELETE RESTRICT ON UPDATE RESTRICT
-;
-
-ALTER TABLE `Book` ADD CONSTRAINT `Relationship12` FOREIGN KEY (`id_language`) REFERENCES `Language` (`id_language`) ON DELETE RESTRICT ON UPDATE RESTRICT
-;
-
-ALTER TABLE `Borrowed` ADD CONSTRAINT `Relationship15` FOREIGN KEY (`num_book`) REFERENCES `Copy` (`id_copy`) ON DELETE RESTRICT ON UPDATE RESTRICT
-;
-
-ALTER TABLE `BookAuthor` ADD CONSTRAINT `Relationship17` FOREIGN KEY (`id_book`) REFERENCES `Book` (`id_book`) ON DELETE RESTRICT ON UPDATE RESTRICT
-;
-
-ALTER TABLE `Copy` ADD CONSTRAINT `Relationship18` FOREIGN KEY (`id_book`) REFERENCES `Book` (`id_book`) ON DELETE RESTRICT ON UPDATE RESTRICT
-;
-
+-- Dumping data for table knjiznicar.type: ~1 rows (approximately)
+/*!40000 ALTER TABLE `type` DISABLE KEYS */;
+INSERT INTO `type` (`id_type`, `Type`, `Max_borrowed_days`) VALUES
+  (1, 'Pravljica', 15);
+/*!40000 ALTER TABLE `type` ENABLE KEYS */;
+/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
