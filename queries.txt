@@ -1,0 +1,14 @@
+SELECT b.id_book,b.title, b.ISBN, a.name,a.surname, bs.status,l.language,t.type,t.max_borrowed_days FROM book b
+join bookauthor ba USING(id_book) JOIN author a USING(id_author)
+join book_status bs using(id_book_status)
+join language l using(id_language)
+join type t using(id_type)
+where ISBN = 123456789
+
+SELECT b.id_book,b.title, b.ISBN, a.name,a.surname, bs.status,l.language,t.type,t.max_borrowed_days FROM bookauthor ba
+join book b USING(id_book) join author a USING(id_author)
+  join book_status bs using(id_book_status)
+  join language l using(id_language)
+  join type t using(id_type)
+WHERE a.name = "Klemen" and a.surname = "Brodej"
+
