@@ -136,6 +136,21 @@ public class main {
                 isciPoISBN(123456789,conn);
                 isciPoAvtorju("Klemen","Brodej",conn);
                 isciPoKnjigi("Moja prva knjiga",conn);
+                String sq  = "SELECT * FROM book WHERE ?";
+                PreparedStatement test =conn.prepareStatement(sq);
+                test.setInt(1,1);
+                ResultSet rs = test.executeQuery();
+                ResultSetMetaData rsmd = rs.getMetaData();
+                int ccount = rsmd.getColumnCount();
+                while(rs.next()) {
+                    for (int i = 1; i < ccount ; i++) {
+                        if (i > 1) System.out.print(",  ");
+                        String columnValue = rs.getString(i);
+                        System.out.print(columnValue + " " + rsmd.getColumnName(i));
+                    }
+                    System.out.println();
+
+                }
 
             } else {
                 throw new SQLException();
