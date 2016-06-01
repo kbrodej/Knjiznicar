@@ -10,6 +10,7 @@ public class db {
     static final String schema = "knjiznicar";
     public  void Connect() throws SQLException {
         Connection conn = null;
+        System.out.println("tralal");
         try {
             conn = DriverManager.getConnection("jdbc:mysql://localhost/knjiznicar?user=root&password=12Brodnik34aA");
             System.out.println("Connection succesful");

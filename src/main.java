@@ -149,6 +149,7 @@ public class main {
                         System.out.print(columnValue + " " + rsmd.getColumnName(i));
                     }
                     System.out.println();
+                    System.out.println();
 
                 }
 
