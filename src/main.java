@@ -1,7 +1,10 @@
 /**
  * Created by kleme on 30-May-16.
  */
+
 import java.sql.*;
+import java.util.ArrayList;
+
 public class main {
     public static void isciPoKnjigi(String bookName, Connection conn){
         try {
@@ -122,37 +125,64 @@ public class main {
             System.out.println(e.getMessage());
         }
     }
-    public static void main(String[] args) throws SQLException{
+    public static void main(String[] args) throws SQLException{ //TODO loadanje spravi v metodo
         Connection conn = null;
 
         System.out.println("Connecting");
         try {
+            ArrayList<book> knjige = new ArrayList<book>();
             String URL = "jdbc:mysql://localhost:3306/knjiznicar";
             String USER = "root";
             String PASS = "12Brodnik34aA";
             conn = DriverManager.getConnection (URL, USER, PASS);
             if(conn.isValid(10)) {
                 System.out.println("Connecton succesful!");
-                isciPoISBN(123456789,conn);
-                isciPoAvtorju("Klemen","Brodej",conn);
-                isciPoKnjigi("Moja prva knjiga",conn);
-                String sq  = "SELECT * FROM book WHERE ?";
+                //isciPoISBN(123456789,conn);
+                //isciPoAvtorju("Klemen","Brodej",conn);
+                //isciPoKnjigi("Moja prva knjiga",conn);
+                String sq  = "SELECT b.id_book, b.Title, b.ISBN,l.Language,t.Type,t.Max_borrowed_days, p.Name, a.Name AS AuthorName, " +
+                        "a.Surname AS AuthorSurname, bs.status FROM book b\n" +
+                        "JOIN language l USING(id_language)\n" +
+                        "JOIN book_status bs USING(id_book_status)\n" +
+                        "JOIN type t USING(id_type)\n" +
+                        "JOIN publisher p USING(id_publisher)\n" +
+                        "JOIN bookauthor ba USING(id_book) JOIN author a USING(id_author) WHERE ?";
                 PreparedStatement test =conn.prepareStatement(sq);
                 test.setInt(1,1);
                 ResultSet rs = test.executeQuery();
-                ResultSetMetaData rsmd = rs.getMetaData();
-                int ccount = rsmd.getColumnCount();
+
+                String rcsql = "SELECT COUNT(*) as count from book b\n" +
+                        "JOIN language l using(id_language)\n" +
+                        "JOIN book_status bs USING(id_book_status)\n" +
+                        "JOIN type t using(id_type)\n" +
+                        "JOIN publisher p USING(id_publisher)\n" +
+                        "JOIN bookauthor ba USING(id_book) join author a USING(id_author)";
+                Statement stmtrc = conn.createStatement();
+                ResultSet rc = stmtrc.executeQuery(rcsql);
+                rc.next();
+                int rcount = rc.getInt("count");
                 while(rs.next()) {
-                    for (int i = 1; i < ccount ; i++) {
-                        if (i > 1) System.out.print(",  ");
-                        String columnValue = rs.getString(i);
-                        System.out.print(columnValue + " " + rsmd.getColumnName(i));
+                    for (int i = 1; i < rcount ; i++) {
+                        //String language, String title, int isbn, String authorName, String authorSurname, String publisher, String type, int max_borrowed_days
+                        int id_book = rs.getInt("id_book");
+                        String title = rs.getString("title");
+                        int ISBN  = rs.getInt("ISBN");
+                        String language = rs.getString("Language");
+                        String type = rs.getString("Type");
+                        int max_borrowed_days = rs.getInt("Max_borrowed_days");
+                        String name =  rs.getString("Name");
+                        String authorName = rs.getString("AuthorName");
+                        String authorSurname = rs.getString("AuthorSurname");
+                        int status =  rs.getInt("status");
+                        book knj = new book(id_book,language,title,ISBN,authorName,authorSurname,name,type,max_borrowed_days,status);
+                        knjige.add(knj);
+
+
+                        System.out.printf("%s %s %s %s %s %s %s %s %s %s",id_book,title,ISBN,language,type,max_borrowed_days,name,authorName,authorSurname,status);
                     }
-                    System.out.println();
                     System.out.println();
 
                 }
-
             } else {
                 throw new SQLException();
             }

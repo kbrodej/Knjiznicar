@@ -12,3 +12,9 @@ join book b USING(id_book) join author a USING(id_author)
   join type t using(id_type)
 WHERE a.name = "Klemen" and a.surname = "Brodej"
 
+SELECT b.id_book, b.Title, b.ISBN,l.Language,t.Type,t.Max_borrowed_days, p.Name, a.Name as AuthorName, a.Surname as AuthorSurname, bs.status from book b
+JOIN language l using(id_language)
+JOIN book_status bs USING(id_book_status)
+JOIN type t using(id_type)
+JOIN publisher p USING(id_publisher)
+JOIN bookauthor ba USING(id_book) join author a USING(id_author)
