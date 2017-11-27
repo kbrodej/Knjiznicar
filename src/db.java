@@ -6,13 +6,13 @@ import java.sql.*;
 public class db {
 
     static final String username = "root";
-    static final String password = "12Brodnik34aA";
+    static final String password = "password";
     static final String schema = "knjiznicar";
     public  void Connect() throws SQLException {
         Connection conn = null;
         System.out.println("tralal");
         try {
-            conn = DriverManager.getConnection("jdbc:mysql://localhost/knjiznicar?user=root&password=12Brodnik34aA");
+            conn = DriverManager.getConnection("jdbc:mysql://localhost/knjiznicar?user=root&password=password");
             System.out.println("Connection succesful");
         } catch (SQLException ex) {
             conn = null;
